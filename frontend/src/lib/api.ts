@@ -42,6 +42,16 @@ export type SubscriptionPayload = {
   memo?: string;
 };
 
+export type SubscriptionUpdatePayload = {
+  name: string;
+  category: string;
+  billingCycle: string;
+  amount: number;
+  nextBillingDate: string;
+  status: string;
+  memo?: string;
+};
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
 type ApiSubscription = {
@@ -129,7 +139,7 @@ export async function registerUser(
   }
 
   const data = await response.json();
-  return normalizeSubscription(data as ApiSubscription);
+  return data as RegisterResponse;
 }
 
 export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
@@ -171,5 +181,66 @@ export async function createSubscription(
     throw new Error(text || "Failed to create subscription");
   }
 
-  return response.json();
+  const data = await response.json();
+  return normalizeSubscription(data as ApiSubscription);
+}
+
+export async function fetchSubscriptionById(
+  id: number
+): Promise<Subscription> {
+  if (!Number.isFinite(id)) {
+    throw new Error("Invalid subscription id");
+  }
+  const url = API_BASE_URL
+    ? `${API_BASE_URL}/api/subscriptions/${id}`
+    : `/api/subscriptions/${id}`;
+  const response = await fetch(url, { cache: "no-store" });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch subscription: ${response.status}`);
+  }
+
+  const data = await response.json();
+  return normalizeSubscription(data as ApiSubscription);
+}
+
+export async function updateSubscription(
+  id: number,
+  payload: SubscriptionUpdatePayload
+): Promise<Subscription> {
+  if (!Number.isFinite(id)) {
+    throw new Error("Invalid subscription id");
+  }
+  const url = API_BASE_URL
+    ? `${API_BASE_URL}/api/subscriptions/${id}`
+    : `/api/subscriptions/${id}`;
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Failed to update subscription");
+  }
+
+  const data = await response.json();
+  return normalizeSubscription(data as ApiSubscription);
+}
+
+export async function deleteSubscription(id: number): Promise<void> {
+  const url = API_BASE_URL
+    ? `${API_BASE_URL}/api/subscriptions/${id}`
+    : `/api/subscriptions/${id}`;
+  const response = await fetch(url, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(text || "Failed to delete subscription");
+  }
 }

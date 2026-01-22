@@ -23,6 +23,26 @@ public class SubscriptionService {
     return subscriptionRepository.save(subscription);
   }
 
+  public Subscription getById(Long id) {
+    return subscriptionRepository.findById(id).orElse(null);
+  }
+
+  public Subscription update(Long id, Subscription updated) {
+    Subscription existing = subscriptionRepository.findById(id).orElse(null);
+    if (existing == null) {
+      return null;
+    }
+
+    existing.setName(updated.getName());
+    existing.setCategory(updated.getCategory());
+    existing.setBillingCycle(updated.getBillingCycle());
+    existing.setAmount(updated.getAmount());
+    existing.setNextBillingDate(updated.getNextBillingDate());
+    existing.setStatus(updated.getStatus());
+    existing.setMemo(updated.getMemo());
+    return subscriptionRepository.save(existing);
+  }
+
   public void delete(Long id) {
     subscriptionRepository.deleteById(id);
   }

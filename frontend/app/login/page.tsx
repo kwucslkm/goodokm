@@ -44,8 +44,8 @@ export default function LoginPage() {
 
   return (
     <main className="app-shell min-h-screen px-5 py-10 text-[var(--foreground)] sm:px-8 sm:py-12">
-      <div className="mx-auto flex min-h-[calc(100vh-5rem)] max-w-5xl flex-col justify-center gap-8 md:min-h-[calc(100vh-6rem)] md:flex-row md:gap-10">
-        <section className="flex flex-1 flex-col justify-center gap-6">
+      <div className="mx-auto flex max-w-4xl flex-col gap-6 pt-2 sm:pt-3">
+        <section className="flex flex-col gap-4">
           <div className="max-w-md">
             <p className="text-xs uppercase tracking-[0.3em] text-[var(--muted)]">
               Goodokm
@@ -57,23 +57,9 @@ export default function LoginPage() {
               구독과 결제를 한 번에 정리하고, 다음 결제일을 놓치지 마세요.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3 text-xs text-[var(--muted)] sm:gap-4">
-            <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
-              자동 알림
-            </div>
-            <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
-              맞춤 카테고리
-            </div>
-            <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
-              리포트 분석
-            </div>
-            <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
-              예산 관리
-            </div>
-          </div>
         </section>
 
-        <section className="flex w-full max-w-md flex-col justify-center">
+        <section className="mx-auto flex w-full max-w-lg flex-col">
           <div className="surface-card rounded-[28px] p-8">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-semibold">로그인</h2>
@@ -144,6 +130,21 @@ export default function LoginPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="grid grid-cols-2 gap-3 text-xs text-[var(--muted)] sm:gap-4">
+          <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
+            자동 알림
+          </div>
+          <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
+            맞춤 카테고리
+          </div>
+          <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
+            리포트 분석
+          </div>
+          <div className="surface-muted rounded-2xl px-4 py-3 shadow-sm">
+            예산 관리
           </div>
         </section>
       </div>

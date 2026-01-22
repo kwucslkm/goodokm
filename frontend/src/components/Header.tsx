@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
   const [email, setEmail] = useState<string | null>(null);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const hideAuthActions = pathname === "/login" || pathname === "/signup";
 
   useEffect(() => {
     setEmail(localStorage.getItem("userEmail"));
@@ -21,6 +23,10 @@ export default function Header() {
     document.documentElement.dataset.theme = initial;
     document.body.dataset.theme = initial;
   }, []);
+
+  useEffect(() => {
+    setEmail(localStorage.getItem("userEmail"));
+  }, [pathname]);
 
   function handleHomeClick(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -75,7 +81,7 @@ export default function Header() {
         </Link>
 
         <div className="flex flex-wrap items-center gap-3 text-sm">
-          {email ? (
+          {!hideAuthActions && email ? (
             <>
               <span className="rounded-full border border-[var(--border)] px-3 py-1 text-xs text-[var(--muted)]">
                 {email}
@@ -90,12 +96,13 @@ export default function Header() {
               <button
                 type="button"
                 onClick={handleLogout}
-                className="rounded-2xl bg-[var(--foreground)] px-4 py-2 text-xs font-semibold text-white transition hover:brightness-95"
+                className="rounded-2xl bg-[var(--foreground)] px-4 py-2 text-xs font-semibold text-[var(--background)] transition hover:brightness-95"
               >
                 로그아웃
               </button>
             </>
-          ) : (
+          ) : null}
+          {!hideAuthActions && !email ? (
             <button
               type="button"
               onClick={() => router.push("/login")}
@@ -103,7 +110,7 @@ export default function Header() {
             >
               로그인
             </button>
-          )}
+          ) : null}
           <button
             type="button"
             onClick={toggleTheme}

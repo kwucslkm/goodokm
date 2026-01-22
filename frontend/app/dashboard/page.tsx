@@ -63,10 +63,11 @@ export default function DashboardPage() {
       0
     );
     const recent = [...subscriptions]
-      .filter((item) => Boolean(item.next_billing_date))
-      .sort((a, b) =>
-        String(b.next_billing_date).localeCompare(String(a.next_billing_date))
-      )
+      .sort((a, b) => {
+        const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return bTime - aTime;
+      })
       .slice(0, 3);
 
     return { yearlyTotal, monthlyTotal, recent };
@@ -108,67 +109,74 @@ export default function DashboardPage() {
 
         {status === "ready" ? (
           <>
-            <section className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-              <div className="surface-card rounded-[28px] p-6 sm:p-7">
-                <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
-                  내 구독정보
-                </p>
-                <div className="mt-5 grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <p className="text-xs font-semibold text-[var(--muted)]">
-                      연간 총 금액
-                    </p>
-                    <p className="mt-2 text-3xl font-semibold">
-                      {summary.yearlyTotal.toLocaleString()}원
-                    </p>
-                    <p className="mt-2 text-xs text-[var(--muted)]">
-                      월간 구독은 연간 기준으로 환산했습니다.
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs font-semibold text-[var(--muted)]">
-                      이번달 이용 금액
-                    </p>
-                    <p className="mt-2 text-3xl font-semibold">
-                      {summary.monthlyTotal.toLocaleString()}원
-                    </p>
-                    <p className="mt-2 text-xs text-[var(--muted)]">
-                      연간 구독은 월 기준으로 나눠 계산했습니다.
-                    </p>
-                  </div>
+            <section className="surface-card rounded-[28px] p-6 sm:p-7">
+              <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
+                내 구독정보
+              </p>
+              <div className="mt-5 grid gap-6 sm:grid-cols-2">
+                <div>
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    연간 총 금액
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold">
+                    {summary.yearlyTotal.toLocaleString()}원
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--muted)]">
+                    월간 구독은 연간 기준으로 환산했습니다.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    이번달 이용 금액
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold">
+                    {summary.monthlyTotal.toLocaleString()}원
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--muted)]">
+                    연간 구독은 월 기준으로 나눠 계산했습니다.
+                  </p>
                 </div>
               </div>
+            </section>
 
-              <div className="surface-card rounded-[28px] p-6 sm:p-7">
+            <section className="surface-card rounded-[28px] p-6 sm:p-7">
+              <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold">최근 구독</h2>
-                {summary.recent.length === 0 ? (
-                  <p className="mt-4 text-sm text-[var(--muted)]">
-                    표시할 구독이 없습니다.
-                  </p>
-                ) : (
-                  <div className="mt-4 space-y-3 text-sm">
-                    {summary.recent.map((subscription) => (
-                      <div
-                        key={subscription.id}
-                        className="surface-muted flex flex-col gap-2 rounded-2xl px-4 py-3"
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="font-semibold">{subscription.name}</p>
-                          <span className="text-xs font-semibold text-[var(--accent-strong)]">
-                            {subscription.amount.toLocaleString()}원
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between text-xs text-[var(--muted)]">
-                          <span>
-                            {subscription.billing_cycle === "YEARLY" ? "연간" : "월간"}
-                          </span>
-                          <span>{subscription.next_billing_date}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <Link
+                  href="/subscriptions"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[var(--border)] text-sm font-semibold text-[var(--muted)] transition hover:border-[var(--accent)] hover:text-[var(--foreground)]"
+                  aria-label="구독 리스트 더보기"
+                >
+                  ...
+                </Link>
               </div>
+              {summary.recent.length === 0 ? (
+                <p className="mt-4 text-sm text-[var(--muted)]">
+                  표시할 구독이 없습니다.
+                </p>
+              ) : (
+                <div className="mt-4 space-y-3 text-sm">
+                  {summary.recent.map((subscription) => (
+                    <div
+                      key={subscription.id}
+                      className="surface-muted flex flex-wrap items-center justify-between gap-2 rounded-2xl px-4 py-3 text-xs sm:text-sm"
+                    >
+                      <span className="min-w-[120px] font-semibold">
+                        {subscription.name}
+                      </span>
+                      <span className="text-[var(--muted)]">
+                        {subscription.billing_cycle === "YEARLY" ? "연간" : "월간"}
+                      </span>
+                      <span className="text-[var(--muted)]">
+                        {subscription.next_billing_date}
+                      </span>
+                      <span className="font-semibold text-[var(--accent-strong)]">
+                        {subscription.amount.toLocaleString()}원
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           </>
         ) : null}

@@ -1,5 +1,6 @@
 package com.goodokm.user;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,13 @@ public class UserService {
 
     return userRepository.findByEmail(normalizedEmail)
         .filter(user -> passwordEncoder.matches(password, user.getPassword()));
+  }
+
+  public List<User> getUsers() {
+    return userRepository.findAll();
+  }
+
+  public User getUser(Long id) {
+    return userRepository.findById(id).orElse(null);
   }
 }

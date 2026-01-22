@@ -1,11 +1,14 @@
+import Link from "next/link";
 import type { Subscription } from "@/src/lib/api";
 
 type SubscriptionListProps = {
   subscriptions: Subscription[];
+  onDelete?: (id: number) => void;
 };
 
 export default function SubscriptionList({
   subscriptions,
+  onDelete,
 }: SubscriptionListProps) {
   if (subscriptions.length === 0) {
     return <p className="text-sm text-[var(--muted)]">구독이 없습니다.</p>;
@@ -21,6 +24,7 @@ export default function SubscriptionList({
             <th className="px-4">이용 구분</th>
             <th className="px-4">이용 금액</th>
             <th className="px-4">상태</th>
+            <th className="px-4">관리</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +34,12 @@ export default function SubscriptionList({
               className="bg-[var(--surface-strong)] shadow-sm"
             >
               <td className="px-4 py-3 font-semibold first:rounded-l-2xl">
-                {subscription.name}
+                <Link
+                  href={`/subscriptions/${subscription.id}`}
+                  className="text-[var(--foreground)] transition hover:text-[var(--accent-strong)]"
+                >
+                  {subscription.name}
+                </Link>
               </td>
               <td className="px-4 py-3">{subscription.next_billing_date}</td>
               <td className="px-4 py-3">
@@ -39,8 +48,19 @@ export default function SubscriptionList({
               <td className="px-4 py-3 font-semibold text-[var(--accent)]">
                 {subscription.amount.toLocaleString()}원
               </td>
-              <td className="px-4 py-3 last:rounded-r-2xl">
+              <td className="px-4 py-3">
                 {subscription.status}
+              </td>
+              <td className="px-4 py-3 last:rounded-r-2xl">
+                {onDelete ? (
+                  <button
+                    type="button"
+                    onClick={() => onDelete(subscription.id)}
+                    className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--muted)] transition hover:border-red-400 hover:text-red-500"
+                  >
+                    삭제
+                  </button>
+                ) : null}
               </td>
             </tr>
           ))}

@@ -113,7 +113,7 @@ export default function NewSubscriptionPage() {
               </div>
               <div className="space-y-2">
                 <label className="field-label">
-                  다음 결제일
+                  구독 시작일(결제일)
                 </label>
                 <input
                   type="date"
