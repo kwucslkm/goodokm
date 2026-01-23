@@ -2,12 +2,12 @@ package com.goodokm.billing;
 
 import java.time.LocalDate;
 import java.util.List;
-import com.goodokm.notification.Notification;
-import com.goodokm.notification.NotificationRepository;
-import com.goodokm.payment.Payment;
-import com.goodokm.payment.PaymentRepository;
-import com.goodokm.subscription.Subscription;
-import com.goodokm.subscription.SubscriptionRepository;
+import com.goodokm.notification.domain.Notification;
+import com.goodokm.notification.domain.NotificationRepository;
+import com.goodokm.payment.domain.Payment;
+import com.goodokm.payment.domain.PaymentRepository;
+import com.goodokm.subscription.domain.Subscription;
+import com.goodokm.subscription.domain.SubscriptionRepository;
 import org.springframework.stereotype.Service;
 
 @Service

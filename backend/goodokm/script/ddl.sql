@@ -35,6 +35,7 @@ CREATE TABLE payments (
                           amount              INTEGER NOT NULL,
                           status              VARCHAR(20) NOT NULL, -- EXPECTED, PAID, SKIPPED
                           created_at          TIMESTAMP DEFAULT NOW(),
+                          updated_at          TIMESTAMP DEFAULT NOW(),
                           CONSTRAINT fk_payment_subscription
                               FOREIGN KEY (subscription_id)
                                   REFERENCES subscriptions(id)
@@ -51,6 +52,7 @@ CREATE TABLE notifications (
                                notify_type         VARCHAR(20) NOT NULL, -- EMAIL
                                sent_yn             BOOLEAN DEFAULT FALSE,
                                created_at          TIMESTAMP DEFAULT NOW(),
+                               updated_at          TIMESTAMP DEFAULT NOW(),
                                CONSTRAINT fk_notification_user
                                    FOREIGN KEY (user_id)
                                        REFERENCES users(id)

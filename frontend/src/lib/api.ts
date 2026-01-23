@@ -54,6 +54,12 @@ export type SubscriptionUpdatePayload = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
 
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+  message?: string | null;
+};
+
 type ApiSubscription = {
   id: number;
   userId?: number;
@@ -100,7 +106,9 @@ export async function fetchSubscriptions(): Promise<Subscription[]> {
   }
 
   const data = await response.json();
-  return Array.isArray(data) ? data.map(normalizeSubscription) : [];
+  const payload = data as ApiResponse<ApiSubscription[]>;
+  const list = payload?.data ?? [];
+  return Array.isArray(list) ? list.map(normalizeSubscription) : [];
 }
 
 export async function fetchSubscriptionsByUser(
@@ -116,7 +124,9 @@ export async function fetchSubscriptionsByUser(
   }
 
   const data = await response.json();
-  return Array.isArray(data) ? data.map(normalizeSubscription) : [];
+  const payload = data as ApiResponse<ApiSubscription[]>;
+  const list = payload?.data ?? [];
+  return Array.isArray(list) ? list.map(normalizeSubscription) : [];
 }
 
 export async function registerUser(
@@ -138,8 +148,8 @@ export async function registerUser(
     throw new Error(text || "Failed to register");
   }
 
-  const data = await response.json();
-  return data as RegisterResponse;
+  const responsePayload = (await response.json()) as ApiResponse<RegisterResponse>;
+  return responsePayload.data;
 }
 
 export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
@@ -159,7 +169,8 @@ export async function loginUser(payload: LoginPayload): Promise<LoginResponse> {
     throw new Error(text || "Failed to login");
   }
 
-  return response.json();
+  const responsePayload = (await response.json()) as ApiResponse<LoginResponse>;
+  return responsePayload.data;
 }
 
 export async function createSubscription(
@@ -181,8 +192,8 @@ export async function createSubscription(
     throw new Error(text || "Failed to create subscription");
   }
 
-  const data = await response.json();
-  return normalizeSubscription(data as ApiSubscription);
+  const responsePayload = (await response.json()) as ApiResponse<ApiSubscription>;
+  return normalizeSubscription(responsePayload.data);
 }
 
 export async function fetchSubscriptionById(
@@ -200,8 +211,8 @@ export async function fetchSubscriptionById(
     throw new Error(`Failed to fetch subscription: ${response.status}`);
   }
 
-  const data = await response.json();
-  return normalizeSubscription(data as ApiSubscription);
+  const payload = (await response.json()) as ApiResponse<ApiSubscription>;
+  return normalizeSubscription(payload.data);
 }
 
 export async function updateSubscription(
@@ -227,8 +238,8 @@ export async function updateSubscription(
     throw new Error(text || "Failed to update subscription");
   }
 
-  const data = await response.json();
-  return normalizeSubscription(data as ApiSubscription);
+  const responsePayload = (await response.json()) as ApiResponse<ApiSubscription>;
+  return normalizeSubscription(responsePayload.data);
 }
 
 export async function deleteSubscription(id: number): Promise<void> {
