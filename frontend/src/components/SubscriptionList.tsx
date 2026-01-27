@@ -23,7 +23,7 @@ export default function SubscriptionList({
           <tr>
             <th className="px-4">서비스</th>
             <th className="px-4">카테고리</th>
-            <th className="px-4">결제일</th>
+            <th className="px-4">구독시작일</th>
             <th className="px-4">이용 구분</th>
             <th className="px-4">이용 금액</th>
             <th className="px-4">상태</th>

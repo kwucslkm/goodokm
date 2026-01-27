@@ -49,7 +49,7 @@ export default function LoginPage() {
         <section className="flex flex-col gap-4">
           <div className="max-w-md">
             <p className="text-base font-semibold tracking-[0.15em] text-[var(--muted)]">
-              Goodokm · SaaS Subscribe Manager(구독 관리 서비스)
+              Goodokm · SaaS Subscribe Manager(구독 관리 서비스) 
             </p>
             {/* <h1 className="mt-3 text-3xl font-semibold leading-tight sm:text-4xl">
               지출을 통제하는 가장 우아한 방법.
@@ -63,7 +63,7 @@ export default function LoginPage() {
         <section className="mx-auto flex w-full max-w-lg flex-col">
           <div className="surface-card rounded-[28px] p-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-semibold">로그인</h2>
+              <h2 className="text-2xl font-semibold">로그인 try</h2>
               <span className="rounded-full border border-[var(--border)] px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-[var(--muted)]">
                 Secure
               </span>
