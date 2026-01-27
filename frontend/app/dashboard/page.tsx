@@ -52,17 +52,20 @@ export default function DashboardPage() {
   }, [router]);
 
   const summary = useMemo(() => {
-    const yearlyTotal = subscriptions.reduce(
+    const active = subscriptions.filter((item) => item.status !== "DELETE");
+    const yearlyTotal = active.reduce(
       (sum, subscription) =>
         sum + normalizeAmount(subscription.amount, subscription.billing_cycle),
       0
     );
-    const monthlyTotal = subscriptions.reduce(
+    const monthlyTotal = active.reduce(
       (sum, subscription) =>
         sum + monthlyAmount(subscription.amount, subscription.billing_cycle),
       0
     );
-    const recent = [...subscriptions]
+    const averageMonthly =
+      active.length > 0 ? Math.round(monthlyTotal / active.length) : 0;
+    const recent = [...active]
       .sort((a, b) => {
         const aTime = a.created_at ? new Date(a.created_at).getTime() : 0;
         const bTime = b.created_at ? new Date(b.created_at).getTime() : 0;
@@ -70,7 +73,13 @@ export default function DashboardPage() {
       })
       .slice(0, 3);
 
-    return { yearlyTotal, monthlyTotal, recent };
+    return {
+      yearlyTotal,
+      monthlyTotal,
+      averageMonthly,
+      count: active.length,
+      recent,
+    };
   }, [subscriptions]);
 
   return (
@@ -113,7 +122,16 @@ export default function DashboardPage() {
               <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
                 내 구독정보
               </p>
-              <div className="mt-5 grid gap-6 sm:grid-cols-2">
+              <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    현재 총 구독 수
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold">{summary.count}개</p>
+                  <p className="mt-2 text-xs text-[var(--muted)]">
+                    삭제 제외 기준입니다.
+                  </p>
+                </div>
                 <div>
                   <p className="text-xs font-semibold text-[var(--muted)]">
                     연간 총 금액
@@ -134,6 +152,17 @@ export default function DashboardPage() {
                   </p>
                   <p className="mt-2 text-xs text-[var(--muted)]">
                     연간 구독은 월 기준으로 나눠 계산했습니다.
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-[var(--muted)]">
+                    월 평균 금액
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold">
+                    {summary.averageMonthly.toLocaleString()}원
+                  </p>
+                  <p className="mt-2 text-xs text-[var(--muted)]">
+                    전체 구독 평균입니다.
                   </p>
                 </div>
               </div>
@@ -163,6 +192,9 @@ export default function DashboardPage() {
                     >
                       <span className="min-w-[120px] font-semibold">
                         {subscription.name}
+                      </span>
+                      <span className="text-[var(--muted)]">
+                        {subscription.category}
                       </span>
                       <span className="text-[var(--muted)]">
                         {subscription.billing_cycle === "YEARLY" ? "연간" : "월간"}

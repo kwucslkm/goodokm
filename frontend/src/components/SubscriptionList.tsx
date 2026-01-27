@@ -3,12 +3,14 @@ import type { Subscription } from "@/src/lib/api";
 
 type SubscriptionListProps = {
   subscriptions: Subscription[];
-  onDelete?: (id: number) => void;
+  onDelete?: (subscription: Subscription) => void;
+  onRestore?: (subscription: Subscription) => void;
 };
 
 export default function SubscriptionList({
   subscriptions,
   onDelete,
+  onRestore,
 }: SubscriptionListProps) {
   if (subscriptions.length === 0) {
     return <p className="text-sm text-[var(--muted)]">구독이 없습니다.</p>;
@@ -20,6 +22,7 @@ export default function SubscriptionList({
         <thead className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
           <tr>
             <th className="px-4">서비스</th>
+            <th className="px-4">카테고리</th>
             <th className="px-4">결제일</th>
             <th className="px-4">이용 구분</th>
             <th className="px-4">이용 금액</th>
@@ -41,6 +44,7 @@ export default function SubscriptionList({
                   {subscription.name}
                 </Link>
               </td>
+              <td className="px-4 py-3">{subscription.category}</td>
               <td className="px-4 py-3">{subscription.next_billing_date}</td>
               <td className="px-4 py-3">
                 {subscription.billing_cycle === "YEARLY" ? "연간" : "월간"}
@@ -52,15 +56,26 @@ export default function SubscriptionList({
                 {subscription.status}
               </td>
               <td className="px-4 py-3 last:rounded-r-2xl">
-                {onDelete ? (
+                <div className="flex items-center gap-2">
+                  {onRestore ? (
+                    <button
+                      type="button"
+                      onClick={() => onRestore(subscription)}
+                      className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--muted)] transition hover:border-emerald-400 hover:text-emerald-500"
+                    >
+                      재구독
+                    </button>
+                  ) : null}
+                  {onDelete ? (
                   <button
                     type="button"
-                    onClick={() => onDelete(subscription.id)}
+                    onClick={() => onDelete(subscription)}
                     className="rounded-md border border-[var(--border)] px-3 py-1 text-xs font-semibold text-[var(--muted)] transition hover:border-red-400 hover:text-red-500"
                   >
                     삭제
                   </button>
-                ) : null}
+                  ) : null}
+                </div>
               </td>
             </tr>
           ))}

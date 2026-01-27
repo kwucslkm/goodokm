@@ -2,11 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  createSubscription,
-  deleteSubscription,
-  fetchSubscriptionsByUser,
-} from "@/src/lib/api";
+import { createSubscription, fetchSubscriptionsByUser, updateSubscription } from "@/src/lib/api";
 import SubscriptionList from "@/src/components/SubscriptionList";
 import type { Subscription } from "@/src/lib/api";
 
@@ -39,7 +35,7 @@ export default function SubscriptionsPage() {
 
     fetchSubscriptionsByUser(userId)
       .then((data) => {
-        setSubscriptions(sortByCreatedAt(data));
+        setSubscriptions(sortByCreatedAt(data).filter((item) => item.status !== "DELETE"));
         setStatus("ready");
       })
       .catch((error) => {
@@ -77,7 +73,7 @@ export default function SubscriptionsPage() {
       form.reset();
       setShowForm(false);
       const refreshed = await fetchSubscriptionsByUser(userId);
-      setSubscriptions(sortByCreatedAt(refreshed));
+      setSubscriptions(sortByCreatedAt(refreshed).filter((item) => item.status !== "DELETE"));
     } catch (error) {
       setFormStatus("error");
       setFormMessage(
@@ -88,7 +84,7 @@ export default function SubscriptionsPage() {
     }
   }
 
-  async function handleDelete(id: number) {
+  async function handleDelete(target: Subscription) {
     const confirmed = window.confirm("이 구독을 삭제할까요?");
     if (!confirmed) {
       return;
@@ -103,9 +99,17 @@ export default function SubscriptionsPage() {
     setDeleteMessage("");
 
     try {
-      await deleteSubscription(id);
+      await updateSubscription(target.id, {
+        name: target.name,
+        category: target.category,
+        billingCycle: target.billing_cycle,
+        amount: target.amount,
+        nextBillingDate: target.next_billing_date,
+        status: "DELETE",
+        memo: target.memo ?? undefined,
+      });
       const refreshed = await fetchSubscriptionsByUser(userId);
-      setSubscriptions(sortByCreatedAt(refreshed));
+      setSubscriptions(sortByCreatedAt(refreshed).filter((item) => item.status !== "DELETE"));
     } catch (error) {
       setDeleteMessage(
         error instanceof Error ? error.message : "구독 삭제에 실패했습니다."

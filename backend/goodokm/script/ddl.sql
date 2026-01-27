@@ -62,3 +62,28 @@ CREATE TABLE notifications (
                                        REFERENCES subscriptions(id)
                                        ON DELETE CASCADE
 );
+
+CREATE TABLE subscription_service (
+                                      id BIGSERIAL PRIMARY KEY,
+                                      name VARCHAR(100) NOT NULL,          -- 서비스명 (Netflix)
+                                      provider VARCHAR(100),               -- 회사명 (Netflix Inc.)
+                                      category VARCHAR(50),                -- video, music, cloud, ai, game ...
+                                      monthly_price INTEGER,               -- 기본 월 구독료 (KRW 기준)
+                                      yearly_price INTEGER,                -- 연간 요금 (optional)
+                                      currency VARCHAR(10) DEFAULT 'KRW',
+                                      logo_url TEXT,                       -- 로고 이미지 경로
+                                      homepage_url TEXT,                   -- 공식 사이트
+                                      description TEXT,                    -- 한 줄 설명
+                                      is_active BOOLEAN DEFAULT TRUE,
+                                      created_at TIMESTAMP DEFAULT NOW(),
+                                      updated_at TIMESTAMP DEFAULT NOW()
+);
+-- 확장 플렌
+CREATE TABLE subscription_service_plan (
+                                           id BIGSERIAL PRIMARY KEY,
+                                           service_id BIGINT REFERENCES subscription_service(id),
+                                           plan_name VARCHAR(50),               -- Basic / Standard / Premium
+                                           monthly_price INTEGER,
+                                           yearly_price INTEGER,
+                                           description TEXT
+);
