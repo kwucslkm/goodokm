@@ -3,8 +3,8 @@ server:
 
 spring:
   datasource:
-#    url: jdbc:postgresql://localhost:15432/goodokm
-    url: jdbc:postgresql://localhost:5432/goodokm # 서버용
+    url: jdbc:postgresql://localhost:15432/goodokm
+#    url: jdbc:postgresql://localhost:5432/goodokm # 서버용
     username: postgres
     password: e1001
     driver-class-name: org.postgresql.Driver
