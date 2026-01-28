@@ -54,14 +54,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: |
-            frontend/app
-            frontend/src
-            frontend/public
-            frontend/package.json
-            frontend/pnpm-lock.yaml
-            frontend/next.config.ts
-            frontend/tsconfig.json
+          source: "frontend/app, frontend/public, frontend/src, frontend/package.json, frontend/next.config.ts, frontend/tsconfig.json"
+
           target: /opt/goodokm/frontend
       # Server Commands
       - name: Build & Restart on Server
