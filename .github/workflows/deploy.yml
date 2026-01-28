@@ -27,8 +27,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Build Backend
-        working-directory: backend
+        working-directory: backend/goodokm
         run: |
+          chmod +x gradlew
           ./gradlew clean build -x test
 
       - name: Upload Backend Jar
@@ -37,9 +38,8 @@ jobs:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          source: backend/build/libs/goodokm-0.0.1-SNAPSHOT.jar
+          source: backend/goodokm/build/libs/goodokm-0.0.1-SNAPSHOT.jar
           target: /opt/goodokm/backend
-          strip_components: 3
 
       # ======================
       # Frontend
@@ -67,7 +67,6 @@ jobs:
             frontend/next.config.ts
             frontend/tsconfig.json
           target: /opt/goodokm/frontend
-          strip_components: 1
 
       # ======================
       # Server Commands
@@ -79,10 +78,12 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            echo "▶ Frontend build"
             cd /opt/goodokm/frontend
             rm -rf .next
             pnpm install
             pnpm run build
 
+            echo "▶ Restart pm2"
             cd /opt/goodokm
             pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
