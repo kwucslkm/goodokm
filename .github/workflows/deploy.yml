@@ -11,9 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ======================
       # 1️⃣ Checkout
-      # ======================
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -41,9 +39,7 @@ jobs:
           source: backend/goodokm/build/libs/goodokm-0.0.1-SNAPSHOT.jar
           target: /opt/goodokm/backend
 
-      # ======================
       # Frontend
-      # ======================
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -68,9 +64,7 @@ jobs:
             frontend/tsconfig.json
           target: /opt/goodokm/frontend
 
-      # ======================
       # Server Commands
-      # ======================
       - name: Build & Restart on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
